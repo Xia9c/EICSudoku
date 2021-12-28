@@ -24,7 +24,7 @@ class PlayScreen : Fragment(), View.OnClickListener {
     private var reverseMap = HashMap<Button, String>()
     private var timerVal: CountDownTimer? = null
     private val initialSolveTime = 3600000L
-    private var solvedcnt: Int = 55
+    private var solvedcnt: Int = 56
     private lateinit var timer: TextView
 
     override fun onCreateView(
