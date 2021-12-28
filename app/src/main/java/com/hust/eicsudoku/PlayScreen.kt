@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.Typeface.BOLD
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,12 +19,14 @@ class PlayScreen : Fragment(), View.OnClickListener {
     private var selectedButton: Button? = null
     private var userInputBoard = Array(9) { IntArray(9) { 0 } }
     private var matrix = Array(9) { IntArray(9) { 0 } }
+    private var inputButtonMap = HashMap<String, Button>()
     private var buttonMap = HashMap<String, Button>()
     private var reverseMap = HashMap<Button, String>()
     private var timerVal: CountDownTimer? = null
     private val initialSolveTime = 3600000L
     private var solvedcnt: Int = 55
     private lateinit var timer: TextView
+    private lateinit var resetButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,8 +34,10 @@ class PlayScreen : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View {
         val view: View = inflater.inflate(R.layout.fragment_play_screen, container, false)
-        timer = view.findViewById(R.id.timer)
+        resetButton = view.findViewById(R.id.resetButton)
+        resetButton.setOnClickListener(this)
 
+        timer = view.findViewById(R.id.timer)
         timerVal = object : CountDownTimer(initialSolveTime, 1000) {
             override fun onTick(p0: Long) {
                 val alreadyPassed = initialSolveTime - p0
@@ -151,32 +154,23 @@ class PlayScreen : Fragment(), View.OnClickListener {
                 v.setOnClickListener(this)
         }
 
-        val resetButton: Button = view.findViewById(R.id.resetButton)
-        val clr: Button = view.findViewById(R.id.clear)
-        val one: Button = view.findViewById(R.id.one)
-        val two: Button = view.findViewById(R.id.two)
-        val three: Button = view.findViewById(R.id.three)
-        val four: Button = view.findViewById(R.id.four)
-        val five: Button = view.findViewById(R.id.five)
-        val six: Button = view.findViewById(R.id.six)
-        val seven: Button = view.findViewById(R.id.seven)
-        val eight: Button = view.findViewById(R.id.eight)
-        val nine: Button = view.findViewById(R.id.nine)
-
-        resetButton.setOnClickListener(this)
-        clr.setOnClickListener(this)
-        one.setOnClickListener(this)
-        two.setOnClickListener(this)
-        three.setOnClickListener(this)
-        four.setOnClickListener(this)
-        five.setOnClickListener(this)
-        six.setOnClickListener(this)
-        seven.setOnClickListener(this)
-        eight.setOnClickListener(this)
-        nine.setOnClickListener(this)
+        inputButtonMap["1"] = view.findViewById(R.id.one)
+        inputButtonMap["2"] = view.findViewById(R.id.two)
+        inputButtonMap["3"] = view.findViewById(R.id.three)
+        inputButtonMap["4"] = view.findViewById(R.id.four)
+        inputButtonMap["5"] = view.findViewById(R.id.five)
+        inputButtonMap["6"] = view.findViewById(R.id.six)
+        inputButtonMap["7"] = view.findViewById(R.id.seven)
+        inputButtonMap["8"] = view.findViewById(R.id.eight)
+        inputButtonMap["9"] = view.findViewById(R.id.nine)
+        inputButtonMap["c"] = view.findViewById(R.id.clear)
+        for ((_, v) in inputButtonMap) {
+            v.setOnClickListener(this)
+        }
 
         return view
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -184,10 +178,9 @@ class PlayScreen : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        val resetButton: Button = requireView().findViewById(R.id.resetButton)
-
-        if (v?.isClickable == false)
+        if (v?.isClickable == false) {
             return
+        }
         if (resetButton.text.toString() == "BACK" && v?.id != resetButton.id) {
             return
         }
@@ -195,16 +188,6 @@ class PlayScreen : Fragment(), View.OnClickListener {
             R.id.clear -> {
                 selectedButton?.text = ""
                 if (selectedButton != null) {
-                    Log.i(
-                        "index",
-                        "${selectedButton!!.id} ${
-                            reverseMap[selectedButton]?.get(1)?.toString()?.toInt()
-                        } ${
-                            reverseMap[selectedButton]?.get(
-                                2
-                            )?.toString()?.toInt()
-                        } "
-                    )
                     val row = reverseMap[selectedButton]?.get(1)?.toString()?.toInt()
                     val col = reverseMap[selectedButton]?.get(2)?.toString()?.toInt()
                     if (col != null && row != null) {
@@ -213,117 +196,8 @@ class PlayScreen : Fragment(), View.OnClickListener {
                 }
                 return
             }
-            R.id.one -> {
-                selectedButton?.text = "1"
-                if (selectedButton != null) {
-                    val row = reverseMap[selectedButton]?.get(1)?.toString()?.toInt()
-                    val col = reverseMap[selectedButton]?.get(2)?.toString()?.toInt()
-                    if (col != null && row != null) {
-                        userInputBoard[row - 1][col - 1] = 1
-                    }
-                }
-                check()
-                return
-            }
-            R.id.two -> {
-                selectedButton?.text = "2"
-                if (selectedButton != null) {
-                    val row = reverseMap[selectedButton]?.get(1)?.toString()?.toInt()
-                    val col = reverseMap[selectedButton]?.get(2)?.toString()?.toInt()
-                    if (col != null && row != null) {
-                        userInputBoard[row - 1][col - 1] = 2
-                    }
-                }
-                check()
-                return
-            }
-            R.id.three -> {
-                selectedButton?.text = "3"
-                if (selectedButton != null) {
-                    val row = reverseMap[selectedButton]?.get(1)?.toString()?.toInt()
-                    val col = reverseMap[selectedButton]?.get(2)?.toString()?.toInt()
-                    if (col != null && row != null) {
-                        userInputBoard[row - 1][col - 1] = 3
-                    }
-                }
-                check()
-                return
-            }
-            R.id.four -> {
-                selectedButton?.text = "4"
-                if (selectedButton != null) {
-                    val row = reverseMap[selectedButton]?.get(1)?.toString()?.toInt()
-                    val col = reverseMap[selectedButton]?.get(2)?.toString()?.toInt()
-                    if (col != null && row != null) {
-                        userInputBoard[row - 1][col - 1] = 4
-                    }
-                }
-                check()
-                return
-            }
-            R.id.five -> {
-                selectedButton?.text = "5"
-                if (selectedButton != null) {
-                    val row = reverseMap[selectedButton]?.get(1)?.toString()?.toInt()
-                    val col = reverseMap[selectedButton]?.get(2)?.toString()?.toInt()
-                    if (col != null && row != null) {
-                        userInputBoard[row - 1][col - 1] = 5
-                    }
-                }
-                check()
-                return
-            }
-            R.id.six -> {
-                selectedButton?.text = "6"
-                if (selectedButton != null) {
-                    val row = reverseMap[selectedButton]?.get(1)?.toString()?.toInt()
-                    val col = reverseMap[selectedButton]?.get(2)?.toString()?.toInt()
-                    if (col != null && row != null) {
-                        userInputBoard[row - 1][col - 1] = 6
-                    }
-                }
-                check()
-                return
-            }
-            R.id.seven -> {
-                selectedButton?.text = "7"
-                if (selectedButton != null) {
-                    val row = reverseMap[selectedButton]?.get(1)?.toString()?.toInt()
-                    val col = reverseMap[selectedButton]?.get(2)?.toString()?.toInt()
-                    if (col != null && row != null) {
-                        userInputBoard[row - 1][col - 1] = 7
-                    }
-                }
-                check()
-                return
-            }
-            R.id.eight -> {
-                selectedButton?.text = "8"
-                if (selectedButton != null) {
-                    val row = reverseMap[selectedButton]?.get(1)?.toString()?.toInt()
-                    val col = reverseMap[selectedButton]?.get(2)?.toString()?.toInt()
-                    if (col != null && row != null) {
-                        userInputBoard[row - 1][col - 1] = 8
-                    }
-                }
-                check()
-                return
-            }
-            R.id.nine -> {
-                selectedButton?.text = "9"
-                if (selectedButton != null) {
-                    val row = reverseMap[selectedButton]?.get(1)?.toString()?.toInt()
-                    val col = reverseMap[selectedButton]?.get(2)?.toString()?.toInt()
-                    if (col != null && row != null) {
-                        userInputBoard[row - 1][col - 1] = 9
-                    }
-                }
-                check()
-                return
-            }
             R.id.resetButton -> {
                 if (resetButton.text.toString() == "BACK") {
-                    Log.i("navigate", "navigating")
                     timerVal?.cancel()
                     requireActivity().onBackPressed()
                     return
@@ -331,21 +205,34 @@ class PlayScreen : Fragment(), View.OnClickListener {
                 resetBoard()
                 return
             }
+            R.id.one, R.id.two, R.id.three, R.id.four, R.id.five, R.id.six, R.id.seven, R.id.eight, R.id.nine -> {
+                val numButton: Button = requireView().findViewById(v.id)
+                selectedButton?.text = numButton.text.toString()
+                if (selectedButton != null) {
+                    val row = reverseMap[selectedButton]?.get(1)?.toString()?.toInt()
+                    val col = reverseMap[selectedButton]?.get(2)?.toString()?.toInt()
+                    if (col != null && row != null) {
+                        userInputBoard[row - 1][col - 1] = numButton.text.toString().toInt()
+                    }
+                }
+                check()
+                return
+            }
+            else -> {
+                if (selectedButton != null) {
+                    selectedButton!!.setBackgroundResource(R.drawable.button_border)
+                    removeHighlight(selectedButton!!)
+                }
+                selectedButton = v as Button
+                highlight(selectedButton!!)
+                selectedButton!!.setBackgroundResource(R.drawable.selected_button_border)
+                return
+            }
         }
-
-        if (selectedButton != null) {
-            selectedButton!!.setBackgroundResource(R.drawable.button_border)
-            removeHighlight(selectedButton!!)
-        }
-        selectedButton = v as Button
-        highlight(selectedButton!!)
-        selectedButton!!.setBackgroundResource(R.drawable.selected_button_border)
     }
-
 
     //Highlight指选中的格子那一行和列里的其他可选格子
     private fun removeHighlight(button: Button) {
-
         if (selectedButton == null) return
 
         val row = reverseMap[button]?.get(1)?.toString()?.toInt()
@@ -368,7 +255,6 @@ class PlayScreen : Fragment(), View.OnClickListener {
     }
 
     private fun highlight(button: Button) {
-
         val row = reverseMap[button]?.get(1)?.toString()?.toInt()
         val col = reverseMap[button]?.get(2)?.toString()?.toInt()
 
@@ -406,23 +292,16 @@ class PlayScreen : Fragment(), View.OnClickListener {
 
     @SuppressLint("SetTextI18n")
     private fun check() {
-        val resetButton: Button = requireView().findViewById(R.id.resetButton)
-
         for (i in 0..8)
             for (j in 0..8) {
-
                 if (userInputBoard[i][j] == 0) {
-                    Log.i("check", "er 1")
                     return
                 }
-
                 for (k in 0..8) {
                     if (userInputBoard[i][j] == userInputBoard[i][k] && j != k) {
-                        Log.i("check", "er 2 $i $j $k ${userInputBoard[i][j]}")
                         return
                     }
                     if (userInputBoard[i][j] == userInputBoard[k][j] && i != k) {
-                        Log.i("check", "er 3 $i $j $k ${userInputBoard[i][j]}")
                         return
                     }
                 }
@@ -436,7 +315,6 @@ class PlayScreen : Fragment(), View.OnClickListener {
                         for (x in 0..2)
                             for (y in 0..2) {
                                 if (userInputBoard[i + r][j + c] == userInputBoard[x + r][y + c] && (x != i || y != j)) {
-                                    Log.i("check", "er here")
                                     return
                                 }
                             }
@@ -546,7 +424,6 @@ class PlayScreen : Fragment(), View.OnClickListener {
 
     //显示结果
     private fun setBoard() {
-        val resetButton: Button = requireView().findViewById(R.id.resetButton)
         for (i in 0..8)
             for (j in 0..8) {
                 buttonMap["b${i + 1}${j + 1}"]?.text = "${matrix[i][j]}"
