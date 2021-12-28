@@ -24,7 +24,7 @@ class PlayScreen : Fragment(), View.OnClickListener {
     private var reverseMap = HashMap<Button, String>()
     private var timerVal: CountDownTimer? = null
     private val initialSolveTime = 3600000L
-    private var solvedcnt: Int = 56
+    private var solvedCnt: Int = 55
     private lateinit var timer: TextView
     private lateinit var resetButton: Button
 
@@ -147,7 +147,7 @@ class PlayScreen : Fragment(), View.OnClickListener {
         buttonMap["b98"] = view.findViewById(R.id.b98)
         buttonMap["b99"] = view.findViewById(R.id.b99)
 
-        generatematrix()
+        generateMatrix()
         for ((k, v) in buttonMap) {
             reverseMap[v] = k
             if (v.isClickable)
@@ -328,7 +328,7 @@ class PlayScreen : Fragment(), View.OnClickListener {
     }
 
     //生成答案矩阵
-    private fun generatematrix() {
+    private fun generateMatrix() {
         //设定一个初始种子后，搜索得到一个数独解矩阵，再在(1..9)间随机映射
         matrix[0][0] = (1..9).random()
         solveSudoku(9)
@@ -340,12 +340,12 @@ class PlayScreen : Fragment(), View.OnClickListener {
                 matrix[i][j] = randomMap[matrix[i][j] - 1]
         //根据所选难度设置题目中已知数字数量
         val difficultyLevel = arguments?.getString("difficulty_text").toString()
-        solvedcnt = when (difficultyLevel) {
+        solvedCnt = when (difficultyLevel) {
             "easy" -> 80
             "medium" -> 42
             else -> 35
         }
-        while (solvedcnt > 0) {
+        while (solvedCnt > 0) {
             val i = (0..8).random()
             val j = (0..8).random()
             val key = "b${(i + 1)}${(j + 1)}"
@@ -359,7 +359,7 @@ class PlayScreen : Fragment(), View.OnClickListener {
             buttonMap[key]?.setBackgroundResource(R.drawable.selected_button_border)
             buttonMap[key]?.setTypeface(null, BOLD)
             buttonMap[key]?.isClickable = false
-            solvedcnt--
+            solvedCnt--
         }
     }
 
